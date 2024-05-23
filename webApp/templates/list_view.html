@@ -1,0 +1,43 @@
+<div class="main">
+    <table>
+
+      <thead>
+        <tr>
+          <th>Owner</th>
+          <th>Transaction ID</th>
+          <th>Transaction Date</th>
+          <th>Broker</th>
+          <th>Ticker</th>
+          <th>Transaction Type</th>
+          <th>Amount</th>
+          <th>Price</th>
+          <th>Fee</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for data in dataset %}
+        <tr>
+          <td>{{ data.owner }}</td>
+          <td>{{ data.transaction_id }}</td>
+          <td>{{ data.transaction_date }}</td>
+          <td>{{ data.get_broker_display }}</td>
+          <td>{{ data.ticker }}</td>
+          <td>{{ data.get_transaction_type_display }}</td>
+          <td>{{ data.amount }}</td>
+          <td>{{ data.price }}</td>
+          <td>{{ data.fee }}</td>
+          <td>{{ data.note }}</td>
+          <td>  <a href="{% url 'update_view' data.id %}">Update</a>  </td>
+          <td>  <a href="{% url 'delete_view' data.id %}">Delete</a>  </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br></br>
+    
+    <button type="button" 
+        onclick="window.location.href='{% url 'create_new_transaction' %}'">Add new transaction
+    </button>
+</div>
