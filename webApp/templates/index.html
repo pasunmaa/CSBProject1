@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Transaction Registry</title>
+    </head>
+
+    <body>
+        <h1>Transaction Register</h1>
+
+        <table>
+        <tr>
+        <th style="text-align:left">Username: <td>{{user.username}} 
+        </table>
+
+
+        <form action='login/' method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Logout"/>
+        </form>
+        </br>
+        
+        {% include 'list_view.html' %}
+    </body>
+
+</html>
