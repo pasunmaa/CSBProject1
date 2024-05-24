@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import (get_object_or_404,
                               render,
@@ -11,7 +11,6 @@ from .models import TransactionModel
 from .forms import TransactionForm
 
 
-@login_required
 def home_view(request):
     context = {}
     if request.user.is_authenticated:
@@ -24,7 +23,13 @@ def home_view(request):
     else:
         # No user logged in
         print(f"home_view no logged-in user")
-        return render(request, 'login.html', context)
+        return redirect('login')
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('home')
 
 
 def login_view(request):
@@ -40,7 +45,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 # Redirect to successful login page (optional)
-                return redirect('home')  # Assuming you have a home view
+                return redirect('home')
             else:
                 # Login failed (invalid credentials)
                 error_message = "Invalid username or password."

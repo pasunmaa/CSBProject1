@@ -1,0 +1,28 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8">
+        <title>Transaction Registry</title>
+    </head>
+
+    <body>
+        <h1>Transaction Register</h1>
+        <main>
+            {% if user.is_authenticated %}
+            <table>
+                <tr>
+                <th style="text-align:left">Username: <td>{{user.username}} 
+            </table>
+            {% else %}
+            <p>You are not logged in</p>
+            <!-- 
+            <a href="{% url 'login' %}">Log In</a>
+            -->
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </main>
+    <body>
+</html>
