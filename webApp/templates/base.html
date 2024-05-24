@@ -12,13 +12,10 @@
             {% if user.is_authenticated %}
             <table>
                 <tr>
-                <th style="text-align:left">Username: <td>{{user.username}} 
+                <th style="text-align:left">Logged in user: <td>{{user.username}} 
             </table>
             {% else %}
             <p>You are not logged in</p>
-            <!-- 
-            <a href="{% url 'login' %}">Log In</a>
-            -->
             {% endif %}
 
             {% block content %}
