@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <form method="POST" enctype="multipart/form-data">
  
     <!-- Security token -->
@@ -11,3 +15,5 @@
 <button type="button" 
     onclick="window.location.href='{% url 'home' %}'">Go to list
 </button>
+
+{% endblock %}
