@@ -144,6 +144,7 @@ def detail_view(request, id):
 def update_view(request, id):
     # dictionary for initial data with field names as keys
     context ={}
+    #print(f"udpate view: request user='{request.user}'")
  
     # fetch the object related to passed id
     obj = get_object_or_404(TransactionModel, id = id)
@@ -154,7 +155,9 @@ def update_view(request, id):
     # save the data from the form and redirect to detail_view
     if form.is_valid():
         user = request.user.get_username()
-        if user == obj.owner:
+        #print(f"udpate view: user='{user}', obj owner='{obj.owner}'")
+        #print(f"udpate view: user='{type(user)}', obj owner='{type(obj.owner)}'")
+        if str(user) == str(obj.owner):
             form.save()
             return HttpResponseRedirect("/") #+id)
         else:
@@ -177,7 +180,7 @@ def delete_view(request, id):
  
     if request.method =="POST":
         user = request.user.get_username()
-        if user == obj.owner:    
+        if str(user) == str(obj.owner):
             obj.delete()
             # after deleting redirect to home page
             return HttpResponseRedirect("/")
