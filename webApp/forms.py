@@ -47,3 +47,8 @@ class TransactionForm(forms.ModelForm):
                 self.fields['broker'].initial = TransactionModel.BROKERS[1]
             #self.fields['owner'].queryset = User.objects.filter(pk=self.request.user.pk)
             print(f"TransactionForm init: {self.request.user}")
+
+class TransactionFilterForm(forms.Form):
+    #owner = forms.ModelChoiceField(queryset=User.objects.all(), required=False)
+    note_startswith = forms.CharField(required=False)
+    #note = forms.TextInput() #required=False)

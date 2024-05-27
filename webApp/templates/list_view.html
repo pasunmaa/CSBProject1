@@ -35,8 +35,15 @@
         {% endfor %}
       </tbody>
     </table>
-    <br></br>
     
+    <form action="" method="get">
+      {% csrf_token %}
+      <label for="note_startswith">Filter by Note (starting with):</label>
+      <input type="text" name="note_startswith" id="note_startswith" value="{{ form.note_startswith.value }}">
+      <input type="submit" value="Filter">
+    </form>
+
+    <br></br>
     <button type="button" 
         onclick="window.location.href='{% url 'create_new_transaction' %}'">Add new transaction
     </button>
