@@ -61,21 +61,6 @@ def login_view(request):
 
 
 @login_required
-def create_view(request):
-    # dictionary for initial data with 
-    # field names as keys
-    context = {}
- 
-    # add the dictionary during initialization
-    form = TransactionForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-         
-    context['form'] = form
-    return render(request, "create_view.html", context)
-
-
-@login_required
 def list_view(request):
     user = request.user.get_username()
     print(f"list_view user={user}")
@@ -90,17 +75,38 @@ def list_view(request):
     return render(request, "list_view.html", context)
 
 
+@login_required
+def create_view(request):
+    # dictionary for initial data with field names as keys
+    context = {}
+ 
+    # add the dictionary during initialization
+    form = TransactionForm(request.POST or None)
+    if form.is_valid():
+        form.instance.owner = request.user  # Set owner on the form instance
+        form.save()
+         
+    context['form'] = form
+    return render(request, "create_view.html", context)
+
+
+# Authorization works properly when @login_required is set on top of the function
+#@login_required
 def detail_view(request, id):
-    # dictionary for initial data with 
-    # field names as keys
+    # dictionary for initial data with field names as keys
     context ={}
  
     # add the dictionary during initialization
-    context["data"] = TransactionModel.objects.get(id = id)
-         
+    try:
+        context["data"] = TransactionModel.objects.get(id = id)
+    except TransactionModel.DoesNotExist:
+        # return empty data
+        pass
+
     return render(request, "detail_view.html", context)
 
 
+@login_required
 def update_view(request, id):
     # dictionary for initial data with field names as keys
     context ={}
@@ -116,13 +122,13 @@ def update_view(request, id):
         form.save()
         return HttpResponseRedirect("/") #+id)
  
-    # add form dictionary to context
+    # add form to context
     context["form"] = form
  
     return render(request, "update_view.html", context)
 
 
-# delete view for details
+@login_required
 def delete_view(request, id):
     # dictionary for initial data with field names as keys
     context ={}
@@ -132,7 +138,6 @@ def delete_view(request, id):
  
  
     if request.method =="POST":
-        # delete object
         obj.delete()
         # after deleting redirect to home page
         return HttpResponseRedirect("/")

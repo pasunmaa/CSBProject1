@@ -26,7 +26,7 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('list/', list_view, name='list_transactions'),
     path('create/', create_view, name='create_new_transaction'),
-    path('<id>', detail_view ),
+    path('<id>', detail_view, name='detail_view'),
     path('<id>/update', update_view, name='update_view'),
     path('<id>/delete', delete_view, name='delete_view')
 ]
