@@ -5,20 +5,52 @@ from django.shortcuts import (get_object_or_404,
                               redirect,
                               HttpResponseRedirect)
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
  
 # relative import of forms
 from .models import TransactionModel
-from .forms import TransactionForm
+from .forms import TransactionForm, TransactionFilterForm
+
+# color library for console printing
+from colorama import Fore, Style
 
 
 def home_view(request):
-    context = {}
+    
     if request.user.is_authenticated:
+        context = {}
+        dataset = TransactionModel.objects.none()  # Initial empty queryset
+
         # User is logged in
-        #logged_in_username = request.user.username
         user = request.user.get_username()
-        print(f"home_view logged-in user={user}")
-        context["dataset"] = TransactionModel.objects.filter(owner__username=user)
+        #print(f"home_view logged-in user={user}")
+        
+        userid = User.objects.get(username=user).id
+        print(f"home_view logged-in user={user}, user id={userid}")
+        
+        # Handle form submission and filtering
+        form = TransactionFilterForm(request.GET)
+        
+        if form.is_valid():
+            note_start = form.cleaned_data['note_startswith']
+            print(f"home_view note_startswith={note_start}")
+            if note_start and (note_start != ''):
+                # Filter by note
+                # INSECURE QUERY
+                query = f"SELECT * FROM webApp_transactionmodel WHERE owner_id = '{userid}' AND note LIKE '{note_start}'"
+                print(f"query={Fore.BLUE}{query}{Style.RESET_ALL}")
+                dataset = TransactionModel.objects.raw(query)
+                # SECURE QUERY
+                dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
+            else:
+                dataset = TransactionModel.objects.filter(owner__username=user)
+        else:
+            dataset = TransactionModel.objects.filter(owner__username=user)
+
+        context = {
+            'dataset': dataset,
+            'form': form,  # Pass the form to the template
+        }
         return render(request, 'index.html', context)
     else:
         # No user logged in
@@ -64,6 +96,7 @@ def login_view(request):
 def list_view(request):
     user = request.user.get_username()
     print(f"list_view user={user}")
+    print(f"list_view request={request}")
     
     # dictionary for initial data with field names as keys
     context = {}
@@ -71,6 +104,8 @@ def list_view(request):
     # add the dictionary during initialization
     #context["dataset"] = TransactionModel.objects.all() #.order_by("-id")
     context["dataset"] = TransactionModel.objects.filter(owner__username=user)
+
+    #query = 'SELECT * FROM webApp_transactionmodel WHERE last_name = %s' **% lname**
          
     return render(request, "list_view.html", context)
 
