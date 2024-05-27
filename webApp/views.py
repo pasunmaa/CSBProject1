@@ -11,6 +11,9 @@ from django.contrib.auth.models import User
 from .models import TransactionModel
 from .forms import TransactionForm, TransactionFilterForm
 
+# color library for console printing
+from colorama import Fore, Style
+
 
 def home_view(request):
     
@@ -25,8 +28,6 @@ def home_view(request):
         userid = User.objects.get(username=user).id
         print(f"home_view logged-in user={user}, user id={userid}")
         
-        # Secure wayt to handle query:
-        #context["dataset"] = TransactionModel.objects.filter(owner__username=user)
         # Handle form submission and filtering
         form = TransactionFilterForm(request.GET)
         
@@ -35,10 +36,12 @@ def home_view(request):
             print(f"home_view note_startswith={note_start}")
             if note_start and (note_start != ''):
                 # Filter by note
-                dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
                 # INSECURE QUERY
-                #query = f"SELECT * FROM webApp_transactionmodel WHERE owner_id = '{userid}'"
-                #dataset = TransactionModel.objects.raw(query)
+                query = f"SELECT * FROM webApp_transactionmodel WHERE owner_id = '{userid}' AND note LIKE '{note_start}'"
+                print(f"query={Fore.BLUE}{query}{Style.RESET_ALL}")
+                dataset = TransactionModel.objects.raw(query)
+                # SECURE QUERY
+                dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
             else:
                 dataset = TransactionModel.objects.filter(owner__username=user)
         else:
