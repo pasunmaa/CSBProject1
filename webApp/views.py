@@ -6,6 +6,7 @@ from django.shortcuts import (get_object_or_404,
                               HttpResponseRedirect)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import HttpResponse
  
 # relative import of forms
 from .models import TransactionModel
@@ -23,8 +24,6 @@ def home_view(request):
 
         # User is logged in
         user = request.user.get_username()
-        #print(f"home_view logged-in user={user}")
-        
         userid = User.objects.get(username=user).id
         print(f"home_view logged-in user={user}, user id={userid}")
         
@@ -154,8 +153,13 @@ def update_view(request, id):
  
     # save the data from the form and redirect to detail_view
     if form.is_valid():
-        form.save()
-        return HttpResponseRedirect("/") #+id)
+        user = request.user.get_username()
+        if user == obj.owner:
+            form.save()
+            return HttpResponseRedirect("/") #+id)
+        else:
+            # 403 = PermissionDenied
+            return HttpResponse("Permission Denied", status=403)
  
     # add form to context
     context["form"] = form
@@ -171,10 +175,13 @@ def delete_view(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(TransactionModel, id = id)
  
- 
     if request.method =="POST":
-        obj.delete()
-        # after deleting redirect to home page
-        return HttpResponseRedirect("/")
+        user = request.user.get_username()
+        if user == obj.owner:    
+            obj.delete()
+            # after deleting redirect to home page
+            return HttpResponseRedirect("/")
+        else:
+            return HttpResponse("Permission Denied", status=403)
  
     return render(request, "delete_view.html", context)

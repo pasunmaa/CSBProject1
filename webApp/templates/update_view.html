@@ -7,11 +7,12 @@
 	<form method="POST">
 		<!-- Security token by Django -->
 		{% csrf_token %}
-
 		<!-- form as paragraph -->
 		{{ form.as_p }}
-
 		<input type="submit" value="Update">
+		{% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    	{% endif %}
 	</form>
 </div>
 
