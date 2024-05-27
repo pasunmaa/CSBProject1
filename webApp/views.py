@@ -41,7 +41,7 @@ def home_view(request):
                 print(f"query={Fore.BLUE}{query}{Style.RESET_ALL}")
                 dataset = TransactionModel.objects.raw(query)
                 # SECURE QUERY
-                dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
+                # dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
             else:
                 dataset = TransactionModel.objects.filter(owner__username=user)
         else:
