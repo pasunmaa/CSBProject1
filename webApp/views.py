@@ -63,9 +63,11 @@ def logout_view(request):
     return redirect('home')
 
 
-def lockout(request, credentials, *args, **kwargs):
-    error_message = "Locked out due to too many login failures. Contact admin."
+def lockout(request, credentials): #, *args, **kwargs):
+    #error_message = f"{request.username} account locked due to too many login failures. Contact admin."
+    error_message = f"Account locked due to too many login failures. Contact admin."
     form = AuthenticationForm()  # Create an empty form for GET requests
+    #print(f"credentials={request.username}")
     return render(request, 'login.html', {'error_message': error_message, 'form':form})
 
 
