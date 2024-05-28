@@ -124,19 +124,20 @@ def create_view(request):
     return render(request, "create_view.html", context)
 
 
-# Authorization works properly when @login_required is set on top of the function
+# Authentication works properly when @login_required is set on top of the function
 #@login_required
 def detail_view(request, id):
     # dictionary for initial data with field names as keys
     context ={}
  
-    # add the dictionary during initialization
     try:
         context["data"] = TransactionModel.objects.get(id = id)
     except TransactionModel.DoesNotExist:
         # return empty data
+        error_message = "Record not found."
+        context['error_message'] = error_message
         pass
-
+ 
     return render(request, "detail_view.html", context)
 
 

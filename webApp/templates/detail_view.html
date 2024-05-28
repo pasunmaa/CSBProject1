@@ -45,6 +45,9 @@
           <th>Note</th>
           <td>{{ data.note }}</td>
         </tr>
+        {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    	  {% endif %}
       </tbody>
     </table>
 </div>
