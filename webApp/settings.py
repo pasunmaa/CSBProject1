@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+#import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(f"BASE_DIR is set to: {BASE_DIR}")
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,10 +27,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-g%2$34p9e)g@41#^)lj1*k7$5k8hw6rg@mzsde29y0auaww&pg"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '::1',      # IPv6 localhost
+]
 
 # Application definition
 
@@ -37,7 +45,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "webApp"
+    "webApp",
+    'axes' # Django Axes to manage logging attempts
 ]
 
 MIDDLEWARE = [
@@ -48,6 +57,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'axes.middleware.AxesMiddleware' # Axes must be the last middleware in the list
 ]
 
 ROOT_URLCONF = "webApp.urls"
@@ -55,7 +65,7 @@ ROOT_URLCONF = "webApp.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "webApp/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -82,6 +92,19 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+   'axes.backends.AxesBackend', # Axes must be first
+   'django.contrib.auth.backends.ModelBackend',
+]
+
+AXES_ENABLED: True                  # Enable or disable Axes plugin functionality
+AXES_VERBOSE: True
+AXES_COOLOFF_TIME: 0.01              # Wait for # hours before logging in again
+AXES_FAILURE_LIMIT: 3
+AXES_RESET_ON_SUCCESS = True
+AXES_LOCKOUT_PARAMETERS = ["username"]
+AXES_LOCKOUT_CALLABLE = "webApp.views.lockout"
+#AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -107,11 +130,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Helsinki" # "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = True # Enables timezones
 
 
 # Static files (CSS, JavaScript, Images)

@@ -6,7 +6,7 @@ from django.shortcuts import (get_object_or_404,
                               HttpResponseRedirect)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
  
 # relative import of forms
 from .models import TransactionModel
@@ -63,6 +63,12 @@ def logout_view(request):
     return redirect('home')
 
 
+def lockout(request, credentials, *args, **kwargs):
+    error_message = "Locked out due to too many login failures. Contact admin."
+    form = AuthenticationForm()  # Create an empty form for GET requests
+    return render(request, 'login.html', {'error_message': error_message, 'form':form})
+
+
 def login_view(request):
     #context = {}
     if request.method == 'POST':
@@ -72,14 +78,23 @@ def login_view(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             print(f"login_view user {username} is trying to log in")
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Redirect to successful login page (optional)
-                return redirect('home')
-            else:
-                # Login failed (invalid credentials)
-                error_message = "Invalid username or password."
+            try:
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    try:
+                        login(request, user)
+                        # Redirect to successful login page (optional)
+                        return redirect('home')
+                    except Exception as e:
+                        error_message = f"Login failed. {e}"
+                else:
+                    # Login failed (invalid credentials)
+                    error_message = "Invalid username or password."
+            except Exception as e:  # Catch broader exception (consider specific exceptions later)
+                if getattr(request, 'status_code', None) == 429:
+                    error_message = "Too many login attempts. Please try again later."
+                else:
+                    error_message = f"Authentication failed. {e}"
         else:
             # Form is invalid (e.g., missing fields)
             error_message = "Please fill out both username and password fields."
