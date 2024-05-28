@@ -131,7 +131,17 @@ def detail_view(request, id):
     context ={}
  
     try:
-        context["data"] = TransactionModel.objects.get(id = id)
+        obj = TransactionModel.objects.get(id = id)
+        #print(f"udpate view: user='{request.user}', obj owner='{obj.owner}'")
+        # INSECURE authorisation missing
+        context["data"] = obj
+        # SECURE authorisation checked
+        '''
+        if str(request.user) == str(obj.owner):
+            context["data"] = obj
+        else:
+            context['error_message'] = "Permission denied"    
+        '''
     except TransactionModel.DoesNotExist:
         # return empty data
         error_message = "Record not found."
