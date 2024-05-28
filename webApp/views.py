@@ -36,7 +36,7 @@ def home_view(request):
             if note_start and (note_start != ''):
                 # Filter by note
                 # INSECURE QUERY
-                query = f"SELECT * FROM webApp_transactionmodel WHERE owner_id = '{userid}' AND note LIKE '{note_start}'"
+                query = f"SELECT * FROM webApp_transactionmodel WHERE owner_id = '{userid}' AND note LIKE '{note_start}%'"
                 print(f"query={Fore.BLUE}{query}{Style.RESET_ALL}")
                 dataset = TransactionModel.objects.raw(query)
                 # SECURE QUERY
