@@ -16,7 +16,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(f"BASE_DIR is set to: {BASE_DIR}")
+#print(f"BASE_DIR is set to: {BASE_DIR}")
 
 
 
@@ -99,7 +99,7 @@ AUTHENTICATION_BACKENDS = [
 
 AXES_ENABLED: True                  # Enable or disable Axes plugin functionality
 AXES_VERBOSE: True
-AXES_COOLOFF_TIME: 0.01              # Wait for # hours before logging in again
+#AXES_COOLOFF_TIME: 1               # Wait for # hours before logging in again
 AXES_FAILURE_LIMIT: 3
 AXES_RESET_ON_SUCCESS = True
 AXES_LOCKOUT_PARAMETERS = ["username"]

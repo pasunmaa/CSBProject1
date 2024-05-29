@@ -1,5 +1,5 @@
 .DS_Store
 webApp/__pycache__
-db.sqlite3
+#db.sqlite3
 
 

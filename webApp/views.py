@@ -27,14 +27,14 @@ def home_view(request):
         # User is logged in
         user = request.user.get_username()
         userid = User.objects.get(username=user).id
-        print(f"home_view logged-in user={user}, user id={userid}")
+        #print(f"home_view logged-in user={user}, user id={userid}")
         
         # Handle form submission and filtering
         form = TransactionFilterForm(request.GET)
         
         if form.is_valid():
             note_start = form.cleaned_data['note_startswith']
-            print(f"home_view note_startswith={note_start}")
+            #print(f"home_view note_startswith={note_start}")
             if note_start and (note_start != ''):
                 # Filter by note
                 # INSECURE QUERY
@@ -64,7 +64,7 @@ def home_view(request):
         return render(request, 'index.html', context)
     else:
         # No user logged in
-        print(f"home_view no logged-in user")
+        #print(f"home_view no logged-in user")
         return redirect('login')
 
 
@@ -78,7 +78,6 @@ def lockout(request, credentials): #, *args, **kwargs):
     #error_message = f"{request.username} account locked due to too many login failures. Contact admin."
     error_message = f"Account locked due to too many login failures. Contact admin."
     form = AuthenticationForm()  # Create an empty form for GET requests
-    #print(f"credentials={request.username}")
     return render(request, 'login.html', {'error_message': error_message, 'form':form})
 
 
@@ -90,7 +89,7 @@ def login_view(request):
             # Extract username and password from the validated form
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            print(f"login_view user {username} is trying to log in")
+            #print(f"login_view user {username} is trying to log in")
             try:
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
@@ -122,8 +121,6 @@ def login_view(request):
 @login_required
 def list_view(request):
     user = request.user.get_username()
-    print(f"list_view user={user}")
-    print(f"list_view request={request}")
     
     # dictionary for initial data with field names as keys
     context = {}
@@ -161,7 +158,6 @@ def detail_view(request, id):
  
     try:
         obj = TransactionModel.objects.get(id = id)
-        #print(f"udpate view: user='{request.user}', obj owner='{obj.owner}'")
         # INSECURE authorisation missing
         context["data"] = obj
         # SECURE authorisation checked
@@ -184,7 +180,6 @@ def detail_view(request, id):
 def update_view(request, id):
     # dictionary for initial data with field names as keys
     context ={}
-    #print(f"udpate view: request user='{request.user}'")
  
     # fetch the object related to passed id
     obj = get_object_or_404(TransactionModel, id = id)
@@ -196,7 +191,6 @@ def update_view(request, id):
     if form.is_valid():
         user = request.user.get_username()
         #print(f"udpate view: user='{user}', obj owner='{obj.owner}'")
-        #print(f"udpate view: user='{type(user)}', obj owner='{type(obj.owner)}'")
         if str(user) == str(obj.owner):
             form.save()
             return HttpResponseRedirect("/") #+id)
