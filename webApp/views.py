@@ -42,17 +42,19 @@ def home_view(request):
                 print(f"query={Fore.BLUE}{query}{Style.RESET_ALL}")
                 try:
                     dataset = TransactionModel.objects.raw(query)
+                    # Force evaluation of the queryset to catch potential errors, otherwise exception may catch lazy
+                    list(dataset)
                 except Exception as e: #ProgrammingError as e:
-                    error_message = f"SQL statement {query} raised an exception"
+                    error_message = f"SQL statement ( {query} ) raised an exception"
                     print(f"home_view {error_message} {e}")
-                print(f"home_view {dataset}")
+                    dataset = TransactionModel.objects.none()  # Return an empty queryset on error
                 # SECURE QUERY
                 # dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
             else:
                 dataset = TransactionModel.objects.filter(owner__username=user)
         else:
             dataset = TransactionModel.objects.filter(owner__username=user)
-
+        
         context = {
             'dataset': dataset,
             'form': form,  # Pass the form to the template
