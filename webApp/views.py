@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.utils import ProgrammingError
  
 # relative import of forms
 from .models import TransactionModel
@@ -18,8 +19,8 @@ from colorama import Fore, Style
 
 
 def home_view(request):
-    
     if request.user.is_authenticated:
+        error_message = f""
         context = {}
         dataset = TransactionModel.objects.none()  # Initial empty queryset
 
@@ -39,17 +40,26 @@ def home_view(request):
                 # INSECURE QUERY
                 query = f"SELECT * FROM webApp_transactionmodel WHERE owner_id = '{userid}' AND note LIKE '{note_start}%'"
                 print(f"query={Fore.BLUE}{query}{Style.RESET_ALL}")
-                dataset = TransactionModel.objects.raw(query)
+                try:
+                    dataset = TransactionModel.objects.raw(query)
+                    # Force evaluation of the queryset to catch potential errors, otherwise exception may catch lazy
+                    list(dataset)
+                except Exception as e: #ProgrammingError as e:
+                    error_message = f"SQL statement ( {query} ) raised an exception ({e})"
+                    # SECURE error message do NOT expose SQL structure
+                    #error_message = f"Errorneous SQL statement raised an exception"
+                    dataset = TransactionModel.objects.none()  # Return an empty queryset on error
                 # SECURE QUERY
                 # dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
             else:
                 dataset = TransactionModel.objects.filter(owner__username=user)
         else:
             dataset = TransactionModel.objects.filter(owner__username=user)
-
-        context = {
+        
+        context = { # Pass the dataset, form and error message to the template
             'dataset': dataset,
-            'form': form,  # Pass the form to the template
+            'form': form,  
+            'error_message': error_message
         }
         return render(request, 'index.html', context)
     else:
