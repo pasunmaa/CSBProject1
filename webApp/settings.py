@@ -97,7 +97,8 @@ AUTHENTICATION_BACKENDS = [
    'django.contrib.auth.backends.ModelBackend',
 ]
 
-AXES_ENABLED: True                  # Enable or disable Axes plugin functionality
+AXES_ENABLED: False                  # Enable or disable Axes plugin functionality
+#AXES_ENABLED: True                  # Enable or disable Axes plugin functionality
 AXES_VERBOSE: True
 #AXES_COOLOFF_TIME: 1               # Wait for # hours before logging in again
 AXES_FAILURE_LIMIT: 3
