@@ -10,4 +10,8 @@
 
 {% include 'list_view.html' %}
 
+{% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
+{% endif %}
+
 {% endblock %}

@@ -19,8 +19,8 @@ from colorama import Fore, Style
 
 
 def home_view(request):
-    
     if request.user.is_authenticated:
+        error_message = f""
         context = {}
         dataset = TransactionModel.objects.none()  # Initial empty queryset
 
@@ -45,8 +45,9 @@ def home_view(request):
                     # Force evaluation of the queryset to catch potential errors, otherwise exception may catch lazy
                     list(dataset)
                 except Exception as e: #ProgrammingError as e:
-                    error_message = f"SQL statement ( {query} ) raised an exception"
-                    print(f"home_view {error_message} {e}")
+                    error_message = f"SQL statement ( {query} ) raised an exception ({e})"
+                    # SECURE error message do NOT expose SQL structure
+                    #error_message = f"Errorneous SQL statement raised an exception"
                     dataset = TransactionModel.objects.none()  # Return an empty queryset on error
                 # SECURE QUERY
                 # dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
@@ -55,9 +56,10 @@ def home_view(request):
         else:
             dataset = TransactionModel.objects.filter(owner__username=user)
         
-        context = {
+        context = { # Pass the dataset, form and error message to the template
             'dataset': dataset,
-            'form': form,  # Pass the form to the template
+            'form': form,  
+            'error_message': error_message
         }
         return render(request, 'index.html', context)
     else:
