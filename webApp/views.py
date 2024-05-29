@@ -7,6 +7,7 @@ from django.shortcuts import (get_object_or_404,
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
  
 # relative import of forms
 from .models import TransactionModel
@@ -126,6 +127,7 @@ def list_view(request):
     return render(request, "list_view.html", context)
 
 
+@csrf_exempt # makes the view function vulnarable to CSRF attack
 @login_required
 def create_view(request):
     # dictionary for initial data with field names as keys

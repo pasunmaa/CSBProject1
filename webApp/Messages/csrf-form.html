@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Transaction</title>
+    <style>
+        form {
+            display: none;  /* Hide the form by default */
+        }
+    </style>
+</head>
+<body>
+    <h1>Stock Transaction</h1>
+    <button onclick="sendForm()">Activate</button>
+    <form id="dangerousForm" action="http://localhost:8000/create/" method="post">
+        <label for="transaction_date">Transaction Date:</label>
+        <input type="date" id="transaction_date" name="transaction_date" value="2024-05-28" required>
+        <label for="broker">Broker:</label>
+        <input type="number" id="broker" name="broker" value="1" required>
+        <label for="ticker">Ticker:</label>
+        <input type="text" id="ticker" name="ticker" value="ABC" required>
+        <label for="transaction_type">Transaction Type:</label>
+        <input type="number" id="transaction_type" name="transaction_type" value="1" required>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" value="1000" required>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" value="10" required>
+        <label for="fee">Fee:</label>
+        <input type="number" id="fee" name="fee" value="1" required>
+        <br>
+        <label for="note">Note:</label>
+        <textarea id="note" name="note">Free transaction</textarea>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function sendForm() {
+            const form = document.getElementById("dangerousForm")
+            form.submit()
+        }
+    </script>
+</body>
+</html>

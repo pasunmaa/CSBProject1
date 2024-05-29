@@ -104,7 +104,6 @@ AXES_FAILURE_LIMIT: 3
 AXES_RESET_ON_SUCCESS = True
 AXES_LOCKOUT_PARAMETERS = ["username"]
 AXES_LOCKOUT_CALLABLE = "webApp.views.lockout"
-#AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -124,6 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Allow connections to other sites
+#SESSION_COOKIE_SAMESITE = 'None'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
