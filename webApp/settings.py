@@ -36,6 +36,17 @@ ALLOWED_HOSTS = [
     '::1',      # IPv6 localhost
 ]
 
+# Axes configuration
+'''
+AXES_ENABLED: True                  # Enable or disable Axes plugin functionality
+AXES_VERBOSE: True
+#AXES_COOLOFF_TIME: 1               # Wait for # hours before logging in again
+AXES_FAILURE_LIMIT: 3
+AXES_RESET_ON_SUCCESS = True
+AXES_LOCKOUT_PARAMETERS = ["username"]
+AXES_LOCKOUT_CALLABLE = "webApp.views.lockout"
+'''
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,7 +57,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "webApp",
-    'axes' # Django Axes to manage logging attempts
+    #'axes' # Django Axes to manage logging attempts
 ]
 
 MIDDLEWARE = [
@@ -57,7 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'axes.middleware.AxesMiddleware' # Axes must be the last middleware in the list
+    #'axes.middleware.AxesMiddleware' # Axes must be the last middleware in the list
 ]
 
 ROOT_URLCONF = "webApp.urls"
@@ -93,18 +104,10 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = [
-   'axes.backends.AxesBackend', # Axes must be first
+   #'axes.backends.AxesBackend', # Axes must be first
    'django.contrib.auth.backends.ModelBackend',
 ]
 
-AXES_ENABLED: False                  # Enable or disable Axes plugin functionality
-#AXES_ENABLED: True                  # Enable or disable Axes plugin functionality
-AXES_VERBOSE: True
-#AXES_COOLOFF_TIME: 1               # Wait for # hours before logging in again
-AXES_FAILURE_LIMIT: 3
-AXES_RESET_ON_SUCCESS = True
-AXES_LOCKOUT_PARAMETERS = ["username"]
-AXES_LOCKOUT_CALLABLE = "webApp.views.lockout"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
