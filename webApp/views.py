@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.utils import ProgrammingError
  
 # relative import of forms
 from .models import TransactionModel
@@ -39,7 +40,12 @@ def home_view(request):
                 # INSECURE QUERY
                 query = f"SELECT * FROM webApp_transactionmodel WHERE owner_id = '{userid}' AND note LIKE '{note_start}%'"
                 print(f"query={Fore.BLUE}{query}{Style.RESET_ALL}")
-                dataset = TransactionModel.objects.raw(query)
+                try:
+                    dataset = TransactionModel.objects.raw(query)
+                except Exception as e: #ProgrammingError as e:
+                    error_message = f"SQL statement {query} raised an exception"
+                    print(f"home_view {error_message} {e}")
+                print(f"home_view {dataset}")
                 # SECURE QUERY
                 # dataset = TransactionModel.objects.filter(owner__username=user, note__startswith=note_start)
             else:
